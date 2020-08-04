@@ -1,6 +1,6 @@
 <template>
   <div class="addUser">
-    <div class="title">欢迎来到政策速递</div>
+    <div class="title">欢迎来到园区查政策速递</div>
     <addUsertit :msg="msg"></addUsertit>
     <addTag :date="date" v-if="show == 1"></addTag>
     <addCity
@@ -146,7 +146,7 @@ export default {
                 sort: "asc"
               }
             ],
-            type: "1"
+            type: "2"
           }
         })
         .then(res => {
@@ -286,6 +286,17 @@ export default {
   height: 32px;
   line-height: 32px;
   width: calc(100% - 50px);
+}
+@media screen and (min-width: 480px) and (max-width: 2080px) {
+  .footer {
+    font-size: 15px;
+    text-align: center;
+    height: 32px;
+    line-height: 32px;
+    margin-top: 30px;
+    position: static;
+    width: 100%;
+  }
 }
 .btn {
   margin-top: 30px;

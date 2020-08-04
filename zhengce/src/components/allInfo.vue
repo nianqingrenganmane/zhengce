@@ -3,20 +3,16 @@
     <div class="listBox">
       <div class="label">
         <div v-if="infos.type == 1">
-          <div class="labely">政策解读</div>
+          <div class="labely labelys">政策解读</div>
+        </div>
+        <div v-if="infos.type == 0">
+          <div class="labely">政策速递</div>
+        </div>
+        <div class="ss" v-for="(items,indexs) in infos.label_place_ids" :key="indexs + 100">
+          <div class="labels">{{items}}</div>
         </div>
         <div>
-          <div v-for="(items,indexs) in tabLists" :key="indexs + 100">
-            <div class="labels" v-if="items.id ==  infos.label_place_ids"># {{items.name}}</div>
-          </div>
-        </div>
-        <div>
-          <div v-for="(labelItems,labelss) in labelLists" :key="labelss +1">
-            <div
-              class="labels labesf"
-              v-if=" infos.label_industry_ids ==  labelItems.id"
-            >@ {{labelItems.name}}</div>
-          </div>
+          <div class="labels labesf">{{infos.label_industry_ids}}</div>
         </div>
 
         <!-- <div
@@ -34,7 +30,7 @@
       <div class="listTitle">{{infos.header}}</div>
       <div class="introduce">{{infos.picture}}</div>
       <div class="listFoot">
-        <div class="listTime">{{infos.created_time}}</div>
+        <div class="listTime">{{infos.created_rtc}}</div>
         <div class="views">{{infos.hits}}已读</div>
       </div>
     </div>
@@ -66,12 +62,14 @@ export default {
 .allList {
   background: #fff;
   justify-content: flex-start;
+  padding: 0 15px;
 }
 .label > div {
   display: inline-block;
 }
 .label {
   display: flex;
+  flex-wrap: wrap;
 }
 .labels {
   border-radius: 2px;
@@ -148,6 +146,14 @@ export default {
   background: #c9a97c;
   padding: 0 4px;
   color: #fff;
-  margin-right: 10px;
+}
+.ss {
+  margin-left: 10px;
+}
+.ss:nth-child(1) {
+  margin-left: 0;
+}
+.labelys {
+  background: #e9b66f;
 }
 </style>

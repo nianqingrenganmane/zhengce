@@ -10,27 +10,32 @@
       <div
         class="listBox"
         :class="item.type == 1?'listBoxzc':'' || item.is_read == 1?'listBoxac':''"
-        @click="nextRout(item,index)"
         v-for="(item,index) in contenLists"
         :key="index"
       >
-        <allInfo :infos="item" :tabLists="tabLists" :labelLists="labelLists"></allInfo>
+        <div @click="nextRout(item,index)">
+          <allInfo :infos="item" :tabLists="tabLists" :labelLists="labelLists"></allInfo>
+        </div>
+        <HomeUnscramble v-if="index == 4 && tabId==-1" :banner="banner2"></HomeUnscramble>
       </div>
     </van-list>
   </div>
 </template>
 
 <script>
+import HomeUnscramble from "../views/HomePage/HomeUnscramble";
 import allInfo from "./allInfo";
 export default {
   name: "allList",
   props: {
     contenLists: Array,
     tabLists: Array,
+    tabId: Number,
     loading: {
       type: Boolean,
       default: false
     },
+    banner2: Array,
     finished: {
       type: Boolean,
       default: false
@@ -46,11 +51,10 @@ export default {
     console.log(this);
   },
   components: {
-    allInfo
+    allInfo,
+    HomeUnscramble
   },
   mounted() {
-    console.log();
-
     this.labelList();
   },
   methods: {
@@ -80,6 +84,8 @@ export default {
     nextRout(e, index) {
       console.log(e.type);
       this.contenLists[index].is_read = 1;
+
+      this.logSet(e.id, "点击", e.header);
       if (e.type == 0) {
         this.$router.push({
           name: `details`, // 只是把query改了，其他都没变
@@ -95,6 +101,23 @@ export default {
           }
         });
       }
+    },
+    logSet(cid, op, cont) {
+      this.$axios
+        .post("log/set", {
+          data: {
+            cid: cid,
+            uid: this.$store.state.userid,
+            pid: this.$route.path,
+            lat: this.$store.state.setItude.lat,
+            lon: this.$store.state.setItude.lon,
+            op: op,
+            cont: cont
+          }
+        })
+        .then(res => {
+          console.log(res);
+        });
     }
   }
 };

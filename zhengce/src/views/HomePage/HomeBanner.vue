@@ -1,19 +1,29 @@
 <template>
   <div class="topSwiperBox">
     <div class="topSwiper">
-      <swiper ref="mySwiper" :options="swiperOptions">
+      <!-- <swiper ref="mySwiper" :options="swiperOptionss">
         <swiper-slide class="slide" v-for="(item, index) in banner" :key="index">
           <img :src="item.img" alt />
           <div class="titles">{{item.header}}</div>
         </swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
-      </swiper>
+      </swiper>-->
+      <van-swipe class="my-swipe" :autoplay="5000" indicator-color="white">
+        <van-swipe-item
+          class="slide"
+          @click="handleClickSlide(item)"
+          v-for="(item, index) in banner"
+          :key="index"
+        >
+          <img :src="item.img" alt />
+          <div class="titles">{{item.header}}</div>
+        </van-swipe-item>
+      </van-swipe>
     </div>
   </div>
 </template>
 
 <script>
-let vm = null;
 export default {
   name: "banenr",
   props: {
@@ -21,42 +31,40 @@ export default {
   },
   data() {
     return {
-      swiperOptions: {
-        pagination: {
-          el: ".swiper-pagination"
-        },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev"
-        },
-        notNextTick: true,
-        //循环
-        loop: true,
-        //设定初始化时slide的索引
-        initialSlide: 0,
-        //自动播放
-        autoplay: {
-          delay: 5000,
-          stopOnLastSlide: false,
-          disableOnInteraction: false
-        },
-        //滑动速度
-        speed: 1000,
-        on: {
-          click: function() {
-            const realIndex = this.realIndex;
-            vm.handleClickSlide(realIndex);
-          }
-        }
-        //小手掌抓取滑动
-        // grabCursor : true,
-        //左右点击
-      }
+      // swiperOptionss: {
+      //   pagination: {
+      //     el: ".swiper-pagination"
+      //   },
+      //   navigation: {
+      //     nextEl: ".swiper-button-next",
+      //     prevEl: ".swiper-button-prev"
+      //   },
+      //   notNextTick: true,
+      //   //循环
+      //   loop: true,
+      //   //设定初始化时slide的索引
+      //   initialSlide: 0,
+      //   //自动播放
+      //   autoplay: {
+      //     delay: 5000,
+      //     stopOnLastSlide: false,
+      //     disableOnInteraction: false
+      //   },
+      //   //滑动速度
+      //   speed: 1000,
+      //   on: {
+      //     click: function() {
+      //       const realIndex = this.realIndex;
+      //       vm.handleClickSlide(realIndex);
+      //     }
+      //   }
+      //小手掌抓取滑动
+      // grabCursor : true,
+      //左右点击
+      // }
     };
   },
-  created() {
-    vm = this;
-  },
+  created() {},
 
   methods: {
     // actives(e) {
@@ -66,11 +74,28 @@ export default {
     //   }
     // },
     handleClickSlide(e) {
-      var urlsa = this._props.banner[e].url;
-      console.log(urlsa, 111);
-      if (urlsa) {
-        window.location.href = urlsa;
+      if (e.url) {
+        this.logSet(e.id, "点击", e.header);
+        window.location.href = e.url;
       }
+    },
+    // 日志记录
+    logSet(cid, op, cont) {
+      this.$axios
+        .post("log/set", {
+          data: {
+            cid: cid,
+            uid: this.$store.state.userid,
+            pid: this.$route.path,
+            lat: this.$store.state.setItude.lat,
+            lon: this.$store.state.setItude.lon,
+            op: op,
+            cont: cont
+          }
+        })
+        .then(res => {
+          console.log(res);
+        });
     }
   }
 };
@@ -79,6 +104,8 @@ export default {
 .slide {
   overflow: hidden;
   position: relative;
+  width: 345px !important;
+  height: 100px !important;
 }
 .slide img {
   width: 100%;
@@ -115,12 +142,9 @@ export default {
 }
 </style>
 <style>
-.topSwiper .swiper-pagination-bullet {
-  width: 5px;
-  height: 5px;
-  border-radius: 2px;
+.topSwiper .van-swipe__indicators {
+  left: 10%;
 }
-
 .topSwiper .swiper-pagination-bullet-active {
   background: #fff;
   width: 8px;

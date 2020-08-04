@@ -23,8 +23,10 @@ Vue.use(VueAwesomeSwiper);
 Vue.use(VueScroller)
 Vue.prototype.$axios = axios
 Vue.prototype.$md5 = md5
-Vue.prototype.$urls = 'https://23.jijieit.com:8300/'
-Vue.prototype.$axios.defaults.baseURL = 'https://23.jijieit.com:8300/'
+Vue.prototype.$urls = 'https://www.yuanqucha.com:8300'
+// https://www.yuanqucha.com:8300
+// https://23.jijieit.com:8300/
+Vue.prototype.$axios.defaults.baseURL = 'https://www.yuanqucha.com:8300'
 Vue.use(VueAxios, axios)
 
 new Vue({

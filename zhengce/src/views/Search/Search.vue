@@ -69,11 +69,13 @@ export default {
     this.records();
     this.labelList();
     this.tabList();
+    this.logSet("null", "查询", "null");
   },
   methods: {
     // 政策详情
     nextRout(e) {
       console.log(e);
+      this.logSet(e.id, "点击", e.header);
       if (e.type == 1) {
         this.$router.push({
           name: `detailsy`, // 只是把query改了，其他都没变
@@ -177,6 +179,7 @@ export default {
       }
     },
     searchList() {
+      this.logSet("null", "搜索", this.value);
       var daty = {
         code: "policy_search",
         data: {
@@ -200,6 +203,20 @@ export default {
             .toISOString()
             .replace(/T/g, " ")
             .replace(/\.[\d]{3}Z/, "");
+          if (res.data.data.list[i].label_industry_ids) {
+            res.data.data.list[i].label_industry_ids = res.data.data.list[
+              i
+            ].label_industry_ids.split("/");
+            console.log(res.data.data.list[i].label_industry_ids);
+          }
+          res.data.data.list[i].label_industry_ids = res.data.data.list[
+            i
+          ].label_industry_ids.pop();
+          if (res.data.data.list[i].label_place_ids) {
+            res.data.data.list[i].label_place_ids = res.data.data.list[
+              i
+            ].label_place_ids.split(",");
+          }
         }
         this.serLists = res.data.data.list;
         this.count = res.data.data.count;
@@ -231,6 +248,25 @@ export default {
     searchs(text) {
       this.value = text;
       this.searchBtn();
+    },
+
+    // 日志记录
+    logSet(cid, op, cont) {
+      this.$axios
+        .post("log/set", {
+          data: {
+            cid: cid,
+            uid: this.$store.state.userid,
+            pid: this.$route.path,
+            lat: this.$store.state.setItude.lat,
+            lon: this.$store.state.setItude.lon,
+            op: op,
+            cont: cont
+          }
+        })
+        .then(res => {
+          console.log(res);
+        });
     }
   }
 };

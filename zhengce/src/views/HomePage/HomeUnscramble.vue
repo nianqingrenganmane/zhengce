@@ -1,98 +1,84 @@
 <template>
   <div class="HomeUnscramble">
     <van-cell title="政策解读" :border="false" is-link to="/unscramble" />
-    <swiper ref="mySwiper" :options="swiperOptions">
-      <swiper-slide class="slide" v-for="(item,index) in banner" :key="index">
-        <img :src="item.img" alt />
-        <div class="label">{{item.label}}</div>
-        <div class="title">{{item.header}}</div>
-      </swiper-slide>
-    </swiper>
+    <div class="my-swipe">
+      <van-swipe class :autoplay="5000" indicator-color="white">
+        <van-swipe-item
+          class="slide"
+          @click="handleClickSlide(item)"
+          v-for="(item, index) in banner"
+          :key="index"
+        >
+          <img :src="item.img" alt />
+          <div class="label">{{item.label}}</div>
+          <div class="titles">{{item.header}}</div>
+        </van-swipe-item>
+      </van-swipe>
+    </div>
   </div>
 </template>
 
 <script>
-let vm = null;
 export default {
   name: "HomeUnscramble",
   props: {
     banner: Array
   },
   data() {
-    return {
-      swiperOptions: {
-        pagination: {},
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev"
-        },
-        notNextTick: true,
-        //循环
-        loop: false,
-        //设定初始化时slide的索引
-        initialSlide: 0,
-        slidesPerView: "auto",
-        //自动播放
-        autoplay: false,
-        watchSlidesProgress: true,
-        spaceBetween: 10,
-        slidesOffsetBefore: 20,
-        centeredSlides: false,
-        //滑动速度
-        speed: 1000,
-        paginationClickable: false,
-        on: {
-          click: function() {
-            const realIndex = this.realIndex;
-            vm.handleClickSlide(realIndex);
-          }
-        }
-      }
-    };
+    return {};
   },
   created() {
-    vm = this;
+    console.log(this);
   },
   methods: {
     handleClickSlide(e) {
-      var urlsa = this._props.banner[e];
-      console.log(urlsa);
-      if (urlsa) {
-        window.location.href = urlsa.url;
+      if (e.url) {
+        this.logSet(e.id, "点击", e.header);
+        window.location.href = e.url;
       }
+    },
+    // 日志记录
+    logSet(cid, op, cont) {
+      this.$axios
+        .post("log/set", {
+          data: {
+            cid: cid,
+            uid: this.$store.state.userid,
+            pid: this.$route.path,
+            lat: this.$store.state.setItude.lat,
+            lon: this.$store.state.setItude.lon,
+            op: op,
+            cont: cont
+          }
+        })
+        .then(res => {
+          console.log(res);
+        });
     }
   }
 };
 </script>
 <style scoped>
+.my-swipe {
+  padding: 0 20px;
+  overflow: hidden;
+}
+
+.van-cell__title {
+  font-size: 18px;
+}
 .slide {
   overflow: hidden;
-  width: 330px;
-  border-radius: 7px;
   position: relative;
+  height: 160px !important;
+  border-radius: 5px;
 }
 .slide img {
   width: 100%;
   display: block;
+  height: 100%;
 }
-.swiper-pagination {
-  text-align: left;
-}
-.topSwiperBox {
-  padding: 10px 15px;
-  overflow: hidden;
-}
-.topSwiper {
-  border-radius: 5px;
-  overflow: hidden;
-}
-.Headlines {
-  display: flex;
-}
-.van-cell__title {
-  font-size: 18px;
-}
-.title {
+.titles {
   font-size: 18px;
   color: #fff;
   position: absolute;
@@ -102,6 +88,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+  font-size: 18px;
 }
 .label {
   position: absolute;
@@ -109,17 +96,5 @@ export default {
   color: #fff;
   left: 10px;
   bottom: 62.5px;
-}
-</style>
-<style>
-.topSwiper .swiper-pagination-bullet {
-  width: 5px;
-  height: 5px;
-  border-radius: 2px;
-}
-
-.topSwiper .swiper-pagination-bullet-active {
-  background: #fff;
-  width: 8px;
 }
 </style>

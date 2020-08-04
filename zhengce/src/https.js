@@ -12,8 +12,7 @@ axios.interceptors.request.use(
 // 响应拦截  401 token过期处理
 axios.interceptors.response.use(
     response => {
-        console.log(response)
-        if (response.data.code == 10103 || response.data.code == 10101) {
+        if (response.data.code == 10201 || response.data.code == 10102 || response.data.code == 10104 || response.data.code == 10103 || response.data.code == 10101) {
             localStorage.removeItem('ele_login')
             router.replace({
                 path: '/author'

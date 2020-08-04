@@ -44,6 +44,7 @@ export default {
   mounted() {
     this.tabList();
     this.onList();
+    this.logSet("null", "查询", "null");
   },
   methods: {
     // 点击分页
@@ -84,6 +85,20 @@ export default {
           } else if (res.data.data.list[i].type == 1) {
             res.data.data.list[i].id =
               res.data.data.list[i].policy_elucidation_id;
+          }
+          if (res.data.data.list[i].label_industry_ids) {
+            res.data.data.list[i].label_industry_ids = res.data.data.list[
+              i
+            ].label_industry_ids.split("/");
+          }
+          res.data.data.list[i].label_industry_ids = res.data.data.list[
+            i
+          ].label_industry_ids.pop();
+
+          if (res.data.data.list[i].label_place_ids) {
+            res.data.data.list[i].label_place_ids = res.data.data.list[
+              i
+            ].label_place_ids.split(",");
           }
         }
         this.count = res.data.data.count;
@@ -130,12 +145,30 @@ export default {
         .then(res => {
           this.tabLis = res.data.data.list;
         });
+    },
+    // 日志记录
+    logSet(cid, op, cont) {
+      this.$axios
+        .post("log/set", {
+          data: {
+            cid: cid,
+            uid: this.$store.state.userid,
+            pid: this.$route.path,
+            lat: this.$store.state.setItude.lat,
+            lon: this.$store.state.setItude.lon,
+            op: op,
+            cont: cont
+          }
+        })
+        .then(res => {
+          console.log(res);
+        });
     }
   }
 };
 </script>
 <style scoped>
 .box {
-  padding: 0 15px;
+  padding: 10px 0px;
 }
 </style>

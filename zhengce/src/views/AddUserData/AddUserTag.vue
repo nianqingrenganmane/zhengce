@@ -99,7 +99,16 @@ export default {
   mounted() {
     console.log(this);
     this.columns = ["18~24", "25~35", "36~45", "46~55", "55以上"];
-    this.columnss = ["创意产业", "互联网行业", "金融行业", "设计行业", "其他"];
+    this.columnss = [
+      "创意产业",
+      "互联网行业",
+      "制造业",
+      "政府机关",
+      "科研院所",
+      "金融行业",
+      "设计行业",
+      "其他"
+    ];
     this.columnsss = ["商务", "政务", "爱好", "其他"];
   },
   methods: {

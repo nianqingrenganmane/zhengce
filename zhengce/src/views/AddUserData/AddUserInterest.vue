@@ -8,7 +8,7 @@
         @click="citysChang3(is)"
         :key="items.id"
       >
-        <div class="citys" :class="items.ele == true ? 'cityActive' : ''">{{ items.name }}{{is}}</div>
+        <div class="citys" :class="items.ele == true ? 'cityActive' : ''">{{ items.name }}</div>
       </div>
     </div>
   </div>

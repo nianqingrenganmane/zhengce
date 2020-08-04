@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import store from "../store";
+import wx from 'weixin-js-sdk'
 
 Vue.use(VueRouter);
 
@@ -97,27 +98,50 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 });
+router.afterEach((to, from, next) => {
+  console.log(111111111111, to, from, next)
+  let path = to.fullPath.slice(1) // 去除'/'
+  if (!sessionStorage.getItem('initLink')) {
+    // 解决ios微信下，分享签名不成功的问题,将第一次的进入的url缓存起来。
+    sessionStorage.setItem('initLink', document.URL)
+  }
+  let url
+
+  // 安卓 process.env.BASE_URL 自己定义各个环境下域名变量
+  url = location.origin + process.env.BASE_URL + path
+  store.commit('setInitLink', url)
+  if (to.path == '/details' || to.path == '/detailsy') {
+    // window.scrollTo(0, 0);
+  }
+
+})
 // 路由守卫
 router.beforeEach((to, form, next) => {
   const isLogin = localStorage.ele_login ? true : false;
+  const session = sessionStorage.getItem("lastname") ? true : false;
   // const isLogin = false;
-  console.log(store.state)
-  console.log(to, form)
+  console.log(to, form, session, store.state)
+  if (to.path == "/author" && session) {
+    if (form.path == "/login" || form.path == "/" || form.path == "/user" || form.path == "/details" || form.path == "/detailsy") {
+      wx.closeWindow()
+      console.log(999999)
+    }
+  }
   if (to.path == "/author") {
-    console.log(3)
     next();
   } else {
-    if (isLogin && store.state.userid) {
-      console.log(2)
+    if (isLogin) {
       next()
     } else {
       if (to.path != '/login') {
         document.cookie = "urls=" + to.path;
+        if (to.query.id) {
+          document.cookie = "id=" + to.query.id;
+        }
       } else if (to.path == '/login') {
         next()
         return
       }
-      console.log(1)
       next("/author")
     }
   }
